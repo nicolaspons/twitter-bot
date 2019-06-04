@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -9,7 +10,7 @@
 #include "markov_chain.hh"
 #include <stdio.h>
 
-void Markov::create(std::string& file, unsigned int suffixLen, unsigned int words)
+void Markov::create(std::string& file, unsigned int suffixLen, unsigned int words, const std::string name)
 {
   std::ifstream f(file.c_str(), std::ios_base::in);
   buffer = std::string{std::istreambuf_iterator<char>{f}, {}};
@@ -20,17 +21,24 @@ void Markov::create(std::string& file, unsigned int suffixLen, unsigned int word
     return;
   }
   createDictionary(suffixLen);
-  createText(words - suffixLen);
+
+  std::ofstream myfile;
+  myfile.open("results/" + name + ".txt");
+  myfile << createText(words - suffixLen);
+  myfile.close();
 }
 
-void Markov::createText(int w)
+std::string Markov::createText(int w)
 {
+  std::stringbuf sbuffer;
+  std::ostream os (&sbuffer);
+
   std::string key, first, second;
   size_t next;
   std::map<std::string, std::vector<std::string>>::iterator it = dictionary.begin();
   std::advance(it, rand() % dictionary.size());
   key = (*it).first;
-  std::cout << key;
+  os << key;
   while(true) {
     std::vector<std::string> d = dictionary[key];
     if(d.size() < 1)
@@ -38,14 +46,15 @@ void Markov::createText(int w)
     second = d[rand() % d.size()];
     if(second.length() < 1)
       break;
-    std::cout << " " << second;
+    os << " " << second;
     if( --w < 0 )
       break;
     next = key.find_first_of(32, 0);
     first = key.substr(next + 1);
     key = first + " " + second;
   }
-  std::cout << "\n";
+  os << "\n";
+  return sbuffer.str();
 }
     
 void Markov::createDictionary(unsigned int suffixLen)
@@ -90,12 +99,12 @@ int main( int argc, char* argv[] ) {
   if (argc == 1)
   {
     std::string file = std::string("./resources/alice_oz.txt");
-    m.create(file, 3, 20);
+    m.create(file, 3, 140, "tweet";
   }
   else if (argc > 1)
   {
     std::string file = std::string(argv[1]);
-    m.create(file, 3, 100);
+    m.create(file, 3, 140, argv[2]);
   }
   return 0;
 }
