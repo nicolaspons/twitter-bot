@@ -85,9 +85,17 @@ void Markov::createDictionary(unsigned int suffixLen)
 }
 
 int main( int argc, char* argv[] ) {
-    srand( unsigned( time( 0 ) ) );
-    Markov m;
+  srand(unsigned(time(0)));
+  Markov m;
+  if (argc == 1)
+  {
     std::string file = std::string("./resources/alice_oz.txt");
-    m.create(file, 3, 200 );
-    return 0;
+    m.create(file, 3, 20);
+  }
+  else if (argc > 1)
+  {
+    std::string file = std::string(argv[1]);
+    m.create(file, 3, 100);
+  }
+  return 0;
 }
