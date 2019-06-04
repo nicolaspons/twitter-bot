@@ -1,5 +1,5 @@
 CC := g++
-CPPFLAGS := -Wall -Werror -pedantic -std=c++17 -g -O3
+CPPFLAGS := -Wall -Werror -pedantic -std=c++17 -O3
 TARGET := markov-chain
 
 SRCS := $(wildcard ./src/*.cc)
